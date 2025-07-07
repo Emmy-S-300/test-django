@@ -9,7 +9,7 @@ pipeline{
     stage('Login to ECR'){
       steps{
         withAWS(region: 'us-east-1', credentials: "aws-creds"){
-          powershell '''
+          sh '''
           $loginCommand = aws ecr get-login --no-include-email --region us-east-1
           Invoke-Expression $loginCommand
           '''
@@ -18,7 +18,7 @@ pipeline{
     }
     stage('Build docker image'){
       steps{
-        powershell '''
+        sh '''
         docker build - t test:django
         docker tag test:django 745490702538.dkr.ecr.us-east-1.amazonaws.com/test:django
         '''
@@ -26,10 +26,9 @@ pipeline{
     }
     stage('Pushing image to ECR'){
       steps{
-        powershell"""
+        sh '''
         docker push 745490702538.dkr.ecr.us-east-1.amazonaws.com/test:django
-        
-        """
+        '''
       }
     }
   }
