@@ -10,8 +10,7 @@ pipeline{
       steps{
         withAWS(region: 'us-east-1', credentials: "aws-creds"){
           sh '''
-          $loginCommand = aws ecr get-login --no-include-email --region us-east-1
-          Invoke-Expression $loginCommand
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 745490702538.dkr.ecr.us-east-1.amazonaws.com
           '''
         }
       }
@@ -19,7 +18,7 @@ pipeline{
     stage('Build docker image'){
       steps{
         sh '''
-        docker build - t test:django
+        docker build -t test:django .
         docker tag test:django 745490702538.dkr.ecr.us-east-1.amazonaws.com/test:django
         '''
       }
